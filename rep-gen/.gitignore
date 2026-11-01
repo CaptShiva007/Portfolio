@@ -1,0 +1,5 @@
+/target
+.env
+*.csv
+*.html
+!static/index.html

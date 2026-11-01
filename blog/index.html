@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>c0nqu15t4d0r</title>
+<meta name="description" content="Projects, writeups and experiments by captshiva007.">
+<style>
+:root{--bg:#090703;--a:#ffb000;--a2:#ff7a00;--dim:#b07a00;--faint:#3d2c00;
+--mono:"JetBrains Mono","Fira Code","Cascadia Mono",Consolas,"Courier New",monospace;
+--glow:0 0 5px rgba(255,176,0,.7),0 0 16px rgba(255,122,0,.35)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--a);font:15px/1.7 var(--mono);text-shadow:0 0 4px rgba(255,176,0,.4);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;
+background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+body::after{content:"";position:fixed;inset:0;z-index:61;pointer-events:none;
+background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65));animation:flick 7s infinite}
+@keyframes flick{0%,96%,100%{opacity:1}97%{opacity:.82}98%{opacity:1}99%{opacity:.9}}
+a{color:var(--a);text-decoration:none}
+a:hover,a:focus-visible{background:var(--a);color:var(--bg);text-shadow:none;outline:none}
+.dim{color:var(--dim)}
+/* synthwave horizon */
+.grid{position:fixed;left:-50%;right:-50%;bottom:0;height:46vh;z-index:-1;opacity:.5;transform-origin:50% 100%;
+transform:perspective(380px) rotateX(62deg);
+background:linear-gradient(var(--faint) 1px,transparent 1px) 0 0/100% 48px,linear-gradient(90deg,var(--faint) 1px,transparent 1px) 0 0/64px 100%;
+animation:run 2.4s linear infinite;
+-webkit-mask-image:linear-gradient(to top,#000 20%,transparent);mask-image:linear-gradient(to top,#000 20%,transparent)}
+@keyframes run{to{background-position:0 48px,0 0}}
+.sun{position:fixed;left:50%;bottom:22vh;width:min(46vw,380px);aspect-ratio:1;z-index:-2;transform:translateX(-50%);border-radius:50%;opacity:.16;
+background:repeating-linear-gradient(0deg,var(--a2) 0 10px,transparent 10px 16px);
+-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+/* nav */
+header{position:sticky;top:0;z-index:50;background:rgba(9,7,3,.92);border-bottom:1px solid var(--faint);backdrop-filter:blur(4px)}
+nav{max-width:980px;margin:auto;display:flex;gap:6px 18px;align-items:center;flex-wrap:wrap;padding:10px 20px}
+nav .ps{margin-right:auto;color:var(--dim)}
+nav a{padding:0 6px}
+nav a.on{border-bottom:2px solid var(--a)}
+main{max-width:980px;margin:auto;padding:0 20px}
+section{padding:84px 0 40px}
+h2{font-size:1.25rem;font-weight:700;margin-bottom:22px;text-shadow:var(--glow)}
+h2::before{content:"$ ";color:var(--dim)}
+/* hero */
+.hero{min-height:calc(100vh - 50px);display:flex;flex-direction:column;justify-content:center;padding-top:30px}
+#boot{min-height:7.2em;color:var(--dim);white-space:pre-wrap}
+#boot b{color:var(--a);font-weight:400}
+h1{font-size:clamp(2.3rem,9vw,5.6rem);line-height:1;letter-spacing:-.02em;margin:18px 0 14px;text-shadow:var(--glow);position:relative;display:inline-block;word-break:break-all}
+h1::before,h1::after{content:attr(data-t);position:absolute;inset:0;overflow:hidden;opacity:0}
+h1::before{color:#ff3d00;transform:translate(-3px,0);animation:g1 6s infinite}
+h1::after{color:#ffe08a;transform:translate(3px,0);animation:g2 6s infinite}
+@keyframes g1{0%,92%,100%{opacity:0}93%{opacity:.8;clip-path:inset(10% 0 60% 0)}95%{opacity:.8;clip-path:inset(55% 0 12% 0)}97%{opacity:0}}
+@keyframes g2{0%,93%,100%{opacity:0}94%{opacity:.8;clip-path:inset(60% 0 8% 0)}96%{opacity:.8;clip-path:inset(5% 0 70% 0)}98%{opacity:0}}
+.tag{max-width:56ch}
+.cur{display:inline-block;width:.6em;height:1.1em;background:var(--a);vertical-align:text-bottom;margin-left:4px;animation:bl 1s steps(1) infinite;box-shadow:var(--glow)}
+@keyframes bl{50%{opacity:0}}
+.cta{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap}
+.cta a{border:1px solid var(--a);padding:6px 16px}
+/* HUD panels */
+.hud{position:relative;border:1px solid var(--faint);padding:20px 22px;background:rgba(255,176,0,.025)}
+.hud::before,.hud::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--a);box-shadow:var(--glow)}
+.hud::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.hud::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.hud h3{font-size:1.02rem;margin-bottom:6px}
+.hud p{color:#e0a000;max-width:60ch}
+.chips{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;font-size:.82rem}
+.chips span{border:1px solid var(--faint);padding:0 8px;color:var(--dim)}
+.status{float:right;font-size:.8rem;color:var(--dim)}
+.status i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--a);margin-right:6px;box-shadow:var(--glow);animation:bl 2s steps(1) infinite}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+/* terminal blocks */
+.term{border:1px solid var(--faint);background:rgba(0,0,0,.55)}
+.term .bar{border-bottom:1px solid var(--faint);padding:4px 14px;color:var(--dim);font-size:.82rem}
+.term .bd{padding:16px 18px}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:0 18px}
+.kv dt{color:var(--dim)}
+ul.list{list-style:none}
+ul.list li{display:grid;grid-template-columns:7.5em 1fr max-content;gap:14px;padding:9px 0;border-bottom:1px dashed var(--faint)}
+ul.list li:last-child{border:0}
+@media(max-width:620px){ul.list li{grid-template-columns:1fr}.status{float:none;display:block}}
+footer{max-width:980px;margin:40px auto 0;padding:20px;border-top:1px solid var(--faint);color:var(--dim);font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.rv{opacity:0;transition:opacity .7s}
+.rv.in{opacity:1}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1}}
+</style>
+</head>
+<body>
+<div class="sun"></div><div class="grid"></div>
+
+<header><nav>
+  <span class="ps">captshiva007@c0nqu15t4d0r:~</span>
+  <a href="#home">home</a><a href="#about">about</a><a href="#projects">projects</a><a href="#writeups">writeups</a><a href="#contact">contact</a>
+</nav></header>
+
+<main>
+<section id="home" class="hero">
+  <div id="boot" aria-live="polite"></div>
+  <h1 data-t="c0nqu15t4d0r">c0nqu15t4d0r</h1>
+  <p class="tag">I build small systems, break them on purpose, and write down what I learn.<span class="cur"></span></p>
+  <div class="cta"><a href="#projects">cd projects</a><a href="#writeups">cat writeups</a></div>
+</section>
+
+<section id="about" class="rv">
+  <h2>whoami</h2>
+  <div class="term"><div class="bar">about.txt</div><div class="bd">
+    <!-- EDIT: replace with your real bio -->
+    <p style="max-width:62ch;margin-bottom:14px">Hi, I'm Shiva (captshiva007). I like getting hardware, networks and servers to do things they weren't set up for, from ESP32 boards to a self-hosted cloud drive that survives power cuts.</p>
+    <dl class="kv">
+      <dt>stack</dt><dd>ESP32, Docker, Cloudflare, PowerShell, Python</dd>
+      <dt>hosting</dt><dd>my own laptop, over IPv6</dd>
+      <dt>learning</dt><dd>networking, security, embedded</dd>
+      <dt>status</dt><dd>online</dd>
+    </dl>
+  </div></div>
+</section>
+
+<section id="projects" class="rv">
+  <h2>ls projects/</h2>
+  <div class="grid2">
+    <article class="hud"><span class="status"><i></i>live</span><h3>PrismDrive</h3>
+      <p>A personal cloud drive on my own laptop, served through Cloudflare. It runs in Docker and works from anywhere.</p>
+      <div class="chips"><span>Seafile</span><span>Docker</span><span>Caddy</span></div>
+      <p style="margin-top:10px"><a href="https://prismdrive.c0nqu15t4d0r.online">open prismdrive</a></p></article>
+    <article class="hud"><span class="status"><i></i>live</span><h3>Power-cut self-healing</h3>
+      <p>When the WiFi comes back with a new IPv6 prefix, a script updates DNS and the router's firewall rule on its own.</p>
+      <div class="chips"><span>PowerShell</span><span>Python</span><span>DuckDNS</span></div></article>
+    <article class="hud"><span class="status">simulated</span><h3>ESP32 keypad calculator</h3>
+      <p>A four-by-four keypad and an OLED screen on an ESP32-C3, built and tested in the Wokwi simulator.</p>
+      <div class="chips"><span>ESP32-C3</span><span>C++</span><span>Wokwi</span></div></article>
+    <article class="hud"><span class="status">planned</span><h3>ESP32 SD-card drive</h3>
+      <p>A tiny file server on an ESP32-S3 with an SD card, for when the budget allows the real hardware.</p>
+      <div class="chips"><span>ESP32-S3</span><span>SD card</span><span>WireGuard</span></div></article>
+  </div>
+</section>
+
+<section id="writeups" class="rv">
+  <h2>cat writeups.log</h2>
+  <div class="term"><div class="bar">writeups.log</div><div class="bd">
+    <!-- EDIT: replace these placeholder entries with your real writeups and links -->
+    <ul class="list">
+      <li><span class="dim">2026-10-04</span><a href="#">Self-hosting behind CGNAT: what actually worked</a><span class="dim">networking</span></li>
+      <li><span class="dim">2026-09-20</span><a href="#">Placeholder: your first CTF writeup</a><span class="dim">ctf</span></li>
+      <li><span class="dim">2026-09-02</span><a href="#">Placeholder: a lab or box you solved</a><span class="dim">lab</span></li>
+    </ul>
+  </div></div>
+</section>
+
+<section id="contact" class="rv">
+  <h2>ls contact/</h2>
+  <div class="term"><div class="bar">contact/</div><div class="bd">
+    <dl class="kv">
+      <dt>github</dt><dd><a href="https://github.com/captshiva007">github.com/captshiva007</a></dd>
+      <dt>drive</dt><dd><a href="https://prismdrive.c0nqu15t4d0r.online">prismdrive.c0nqu15t4d0r.online</a></dd>
+      <dt>email</dt><dd><!-- EDIT --><a href="mailto:you@c0nqu15t4d0r.online">you@c0nqu15t4d0r.online</a></dd>
+    </dl>
+  </div></div>
+</section>
+</main>
+
+<footer><span>c0nqu15t4d0r.online</span><span id="up">session 00:00:00</span></footer>
+
+<script>
+(function(){
+  var reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var lines=["> booting c0nqu15t4d0r.online ...","> network: ipv6 <b>[ ok ]</b>","> tunnel: cloudflare <b>[ ok ]</b>","> drive: prismdrive <b>[ ok ]</b>","> access granted"];
+  var el=document.getElementById("boot"),li=0;
+  function next(){
+    if(li>=lines.length)return;
+    var d=document.createElement("div");d.innerHTML=lines[li++];el.appendChild(d);
+    setTimeout(next,reduce?0:380);
+  }
+  next();
+  var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add("in")})},{threshold:.12});
+  document.querySelectorAll(".rv").forEach(function(s){io.observe(s)});
+  var links=document.querySelectorAll("nav a"),secs=[].map.call(links,function(a){return document.querySelector(a.getAttribute("href"))});
+  var so=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+x.target.id)})}})},{rootMargin:"-45% 0px -50% 0px"});
+  secs.forEach(function(s){so.observe(s)});
+  var t0=Date.now(),up=document.getElementById("up");
+  setInterval(function(){var s=Math.floor((Date.now()-t0)/1000),p=function(n){return String(n).padStart(2,"0")};
+    up.textContent="session "+p(Math.floor(s/3600))+":"+p(Math.floor(s/60)%60)+":"+p(s%60)},1000);
+})();
+</script>
+</body>
+</html>

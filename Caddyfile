@@ -1,0 +1,26 @@
+{
+	auto_https off
+}
+
+# Seafile (the drive)
+http://prismdrive.c0nqu15t4d0r.online:8080 {
+	request_body {
+		max_size 100MB
+	}
+	reverse_proxy seafile:80 {
+        header_up X-Forwarded-Proto https
+    }
+}
+
+# Blog (static site in ./blog)
+http://c0nqu15t4d0r.online:8080, http://www.c0nqu15t4d0r.online:8080 {
+	redir https://dev.c0nqu15t4d0r.online{uri} 302
+}
+
+http://dev.c0nqu15t4d0r.online:8080 {
+	reverse_proxy site:3000
+}
+
+http://rep-gen.c0nqu15t4d0r.online:8080 {
+	reverse_proxy rep-gen:3000
+}

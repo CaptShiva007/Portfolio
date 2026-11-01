@@ -1,0 +1,1 @@
+(function(){try{var d=document.documentElement,g=function(k,f){return localStorage.getItem(k)||f};d.dataset.theme=g("theme","amber");d.dataset.fx=g("fx","on");d.dataset.ui=g("ui","classic");}catch(e){}})();

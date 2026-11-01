@@ -1,0 +1,6 @@
+target
+.git
+.env
+*.csv
+*.html
+!static/index.html
