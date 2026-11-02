@@ -12,12 +12,12 @@ Source: [github.com/CaptShiva007/positron](https://github.com/CaptShiva007/posit
 
 ## Where it stands
 
-The pipeline runs end to end on Windows: a process starts, ETW reports it, the image gets scanned against YARA rules, and a matching rule can kill the process.
+The pipeline runs end to end on Windows: a process starts, ETW reports it, the image gets scanned against YARA rules, and a matching rule can kill the process. I've confirmed it live in alert-only mode. Launching a binary that contained the test marker produced a `ProcessStart` event with a drive-letter image path, a `[DETECTION]` for `positron_test_marker` with `action=Kill`, and a `would kill` line instead of an actual kill. The collector needs an elevated shell, because kernel ETW sessions refuse non-admin callers with "Access is denied".
 
 | Module | Status |
 |---|---|
 | `schema` | Done. Normalized `Event` type: process start/exit, file write/delete, network connect, DNS query |
-| `collectors` | Windows (ETW) process collector working. Linux (eBPF) and macOS (ESF) are empty stubs |
+| `collectors` | Windows (ETW) process collector working, with kernel device paths translated to drive letters. Linux (eBPF) and macOS (ESF) are empty stubs |
 | `bus` | Done. Bounded `tokio::mpsc` channel with backpressure |
 | `detect` | Tier 1 (YARA) working. Tier 2 (behavior graph) and Tier 3 (local ML) not started |
 | `respond` | Windows kill and network isolation working, wired to detections. Linux/macOS stubbed |
@@ -73,9 +73,12 @@ The latest round fixed two bugs that had quietly disabled Tier 1 detection entir
 
 Both were silent in the sense that mattered: the agent still ran and still printed events. There's now a test that compiles every rule in the repo's `rules/examples/` directory, so a broken rule fails `cargo test` instead of turning detection off at runtime.
 
+A third one was waiting behind those. The kernel process provider reports `ImageName` as an NT device path like `\Device\HarddiskVolume3\Windows\System32\cmd.exe`, which `std::fs::read` can't open, so every scan would have failed. The collector now asks Windows which device backs each drive letter at startup and rewrites those paths before the event goes on the bus. That keeps the `Event` contract honest: any path in it can actually be opened. Details in [Turning NT device paths back into drive letters](/notes/nt-device-paths-to-drive-letters).
+
 ## What's next
 
-- Verify the ETW field names against a live trace. ETW often reports `ImageName` as a kernel device path (`\Device\HarddiskVolume3\...`) rather than `C:\...`, which would make the YARA scan fail to open the file.
+- Repeat the live check with `--enforce` and confirm the process actually dies.
+- Fill in the empty `cmdline` and `user` fields. The kernel process start event doesn't carry the command line, so it has to come from somewhere else.
 - Linux collector on eBPF via Aya.
 - `store`: a durable local event log that survives offline periods.
 - Swap the `netsh` isolation for the Windows Filtering Platform for finer control.
